@@ -274,7 +274,7 @@ mkdir -p "$BIN_DIR"
 
 cat > "$BIN_DIR/$CMD" << CMDEOF
 #!/usr/bin/env bash
-cd "$INSTALL_DIR" && python3 cerberus.py "\$@"
+cd "$INSTALL_DIR/cerberus" && python3 cerberus.py "$@"
 CMDEOF
 
 chmod +x "$BIN_DIR/$CMD"
