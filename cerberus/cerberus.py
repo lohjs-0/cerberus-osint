@@ -74,9 +74,7 @@ INFO_BOX = r"""+-------------------------------------------+
 +-------------------------------------------+"""
 
 
-# ─────────────────────────────────────────────────────────
 # BANNER
-# ─────────────────────────────────────────────────────────
 
 def show_banner():
     os.system("cls" if os.name == "nt" else "clear")
@@ -117,52 +115,47 @@ def show_banner():
     print()
 
 
-# ─────────────────────────────────────────────────────────
 # MENU
-# ─────────────────────────────────────────────────────────
 
 def show_menu(target=None):
     tor_status = G + " [TOR ON]" + X if is_tor() else ""
     alvo = R + "  Target : " + target + tor_status + X if target else D + "  Target : not defined" + X
     print(alvo)
     print()
-    print(R + "  (1)  SOUL SEARCH    -> username / socials" + X)
-    print(R + "  (2)  DOMAIN CURSE   -> domain / IP / DNS" + X)
-    print(R + "  (3)  HELLSCAN       -> ports / services" + X)
-    print(R + "  (4)  CHAIN RITUAL   -> full pipeline" + X)
-    print(R + "  (5)  GRIMOIRE       -> reports / export" + X)
-    print(R + "  (6)  DORKS          -> google dorks" + X)
-    print(R + "  (7)  UNDERWORLD     -> subdomains / email" + X)
-    print(R + "  (8)  CONFIGURE      -> APIs / settings" + X)
-    print(R + "  (9)  VULNSCAN       -> web vulnerabilities" + X)
-    print(R + "  (10) PHONE OSINT    -> phone / carrier" + X)
-    print(R + "  (11) SHODAN         -> devices / banners / CVEs" + X)
-    print(R + "  (12) SSL CHECK      -> certificate / TLS" + X)
-    print(R + "  (13) TECH SCAN      -> stack / frameworks / CMS" + X)
-    print(R + "  (14) CVE LOOKUP     -> search NVD by product" + X)
-    print(R + "  (15) PASTE MONITOR  -> leaks / public pastes" + X)
-    print(R + "  (16) EXPORT HTML    -> visual grimoire" + X)
-    print(R + "  (17) ANALYZE        -> intelligence report" + X)
-    print(R + "  (18) TREE           -> discovery tree" + X)
-    print(R + "  (19) TIMELINE       -> exposure timeline" + X)
-    print(R + "  (20) SOCIAL GRAPH   -> username connections" + X)
-    print(R + "  (21) CERBERUS WATCH -> monitoring daemon" + X)
-    print(R + "  (22) GRAPH          -> visual HTML graph" + X)
-    print(R + "  (23) CLEAR LOGS     -> delete target logs" + X)
-    print(R + "  (24) EXPORT MD      -> markdown report / Obsidian" + X)
-    print(R + "  (25) CORRELATE      -> auto correlation / username -> domain" + X)
-    print(R + "  (26) DASHBOARD      -> terminal intelligence summary" + X)
-    print(R + "  (27) TOR            -> anonymous mode / proxy" + X)
-    print(R + "  (28) CLOUD SCAN     -> S3 / Firebase / GCP / Azure" + X)
+    print(D + "  >> Not sure where to start? Try option (12) CHAIN RITUAL." + X)
     print()
-    print(R + "  (T)  SET TARGET     -> change target" + X)
-    print(R + "  (0)  DESCEND        -> exit" + X)
+
+    print(R + "  ┌─ COLLECTION / RECON ───────────────────────────────────┐" + X)
+    print(R + "  │  (1) SOUL SEARCH    -> username / socials              │" + X)
+    print(R + "  │  (2) DOMAIN CURSE   -> domain / IP / DNS               │" + X)
+    print(R + "  │  (3) HELLSCAN       -> ports / services                │" + X)
+    print(R + "  │  (4) DORKS          -> google dorks                    │" + X)
+    print(R + "  │  (5) UNDERWORLD     -> subdomains / email              │" + X)
+    print(R + "  │  (6) SSL CHECK      -> certificate / TLS               │" + X)
+    print(R + "  │  (7) TECH SCAN      -> stack / frameworks / CMS        │" + X)
+    print(R + "  ├─ ANALYSIS / SECURITY ──────────────────────────────────┤" + X)
+    print(R + "  │  (8)  VULNSCAN      -> web vulnerabilities             │" + X)
+    print(R + "  │  (9) CVE LOOKUP    -> search NVD by product            │" + X)
+    print(R + "  │  (10) PASTE MONITOR -> leaks / public pastes           │" + X)
+    print(R + "  │  (11) CLOUD SCAN    -> S3 / Firebase / GCP / Azure     │" + X)
+    print(R + "  ├─ AUTOMATION ───────────────────────────────────────────┤" + X)
+    print(R + "  │  (12)  CHAIN RITUAL  -> full pipeline                  │" + X)
+    print(R + "  ├─ REPORTS / VISUALIZATION ──────────────────────────────┤" + X)
+    print(R + "  │  (13) GRIMOIRE      -> reports / list / export         │" + X)
+    print(R + "  │  (14) VISUALIZE    -> analyze / graph / tree / timeline│" + X)
+    print(R + "  │  (15) DASHBOARD     -> terminal intelligence summary   │" + X)
+    print(R + "  ├─ SYSTEM ───────────────────────────────────────────────┤" + X)
+    print(R + "  │  (C)  CONFIGURE     -> APIs / settings                 │" + X)
+    print(R + "  │  (X)  TOR           -> anonymous mode / proxy          │" + X)
+    print(R + "  │  (L)  CLEAR LOGS    -> delete target logs              │" + X)
+    print(R + "  └────────────────────────────────────────────────────────┘" + X)
+    print()
+    print(R + "  (T) SET TARGET   -> change target" + X)
+    print(R + "  (0) DESCEND      -> exit" + X)
     print()
 
 
-# ─────────────────────────────────────────────────────────
 # SCORING
-# ─────────────────────────────────────────────────────────
 
 def calcular_score(portas, high_vulns, medium_vulns, subdomains, ssl_dias, perfis, cves):
     score = 0
@@ -226,9 +219,7 @@ def judgment(osint_score, recon_score, sec_score, findings):
     print()
 
 
-# ─────────────────────────────────────────────────────────
 # CHAIN RITUAL
-# ─────────────────────────────────────────────────────────
 
 def chain_ritual(target):
     findings     = []
@@ -337,9 +328,7 @@ def chain_ritual(target):
     export_html()
 
 
-# ─────────────────────────────────────────────────────────
 # DORKS
-# ─────────────────────────────────────────────────────────
 
 DORKS_PRESET = {
     "1": ("Admin panels",    "inurl:admin/login.php"),
@@ -404,9 +393,7 @@ def dorks():
     print(R + "  Report saved: " + X + caminho + "\n")
 
 
-# ─────────────────────────────────────────────────────────
 # TOR CONTROL
-# ─────────────────────────────────────────────────────────
 
 def tor_control():
     TOR_PROXY = {"http": "socks5h://127.0.0.1:9150", "https": "socks5h://127.0.0.1:9150"}
@@ -450,9 +437,7 @@ def tor_control():
             print(R + "  Error: " + str(e) + X + "\n")
 
 
-# ─────────────────────────────────────────────────────────
 # DASHBOARD
-# ─────────────────────────────────────────────────────────
 
 def dashboard():
     os.system("cls" if os.name == "nt" else "clear")
@@ -536,9 +521,7 @@ def dashboard():
     input(R + "  [Press ENTER to return]" + X)
 
 
-# ─────────────────────────────────────────────────────────
 # EXPORT GRAPH
-# ─────────────────────────────────────────────────────────
 
 def export_graph():
     if not os.path.exists(LOG_DIR):
@@ -672,42 +655,52 @@ def export_graph():
         legend_html += f'<div class="li"><span style="background:{cor}"></span>{nome_l}</div>'
 
     html = """<!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>CERBERUS GRAPH</title>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#080808;font-family:monospace;color:#c00;overflow:hidden}
-#hd{padding:8px 14px;border-bottom:1px solid #300;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
-#hd h1{font-size:.85em;letter-spacing:2px;color:#c00}
-#hd p{font-size:.7em;color:#400}
-#legend{display:flex;gap:10px;flex-wrap:wrap;padding:6px 14px;border-bottom:1px solid #200}
-.li{display:flex;align-items:center;gap:5px;font-size:.7em;color:#800}
-.li span{width:10px;height:10px;border-radius:50%;display:inline-block}
-#mynetwork{width:100vw;height:calc(100vh - 72px)}
-#info{position:fixed;bottom:10px;right:10px;background:#0d0000;border:1px solid #300;padding:8px 12px;font-size:.72em;color:#c00;border-radius:4px;display:none;max-width:220px;word-break:break-all;z-index:99}
-#cls{position:fixed;bottom:10px;left:10px;background:#1a0000;border:1px solid #500;padding:6px 12px;font-size:.72em;color:#c00;border-radius:4px;cursor:pointer;z-index:99}
+body{background:#080808;font-family:'Share Tech Mono',monospace;color:#c00;overflow:hidden}
+#hd{padding:10px 16px;border-bottom:1px solid #300;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;background:linear-gradient(90deg,#100000,#0a0000)}
+#hd h1{font-size:.9em;letter-spacing:3px;color:#f00;text-shadow:0 0 6px rgba(255,0,0,.3)}
+#hd h1 small{color:#600;font-weight:normal;letter-spacing:1px}
+#hd p{font-size:.7em;color:#500;letter-spacing:1px}
+#legend{display:flex;gap:14px;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid #200;background:#0a0000}
+.li{display:flex;align-items:center;gap:6px;font-size:.7em;color:#900;letter-spacing:1px}
+.li span{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 4px currentColor}
+#mynetwork{width:100vw;height:calc(100vh - 76px);background:radial-gradient(circle at center,#0c0000 0%,#060606 80%)}
+#info{position:fixed;bottom:14px;right:14px;background:#0d0000;border:1px solid #400;padding:10px 14px;font-size:.72em;color:#d33;border-radius:6px;display:none;max-width:240px;word-break:break-all;z-index:99;box-shadow:0 0 12px rgba(255,0,0,.15);line-height:1.5}
+#info b{color:#f55;letter-spacing:1px}
+#info small{color:#700}
+#cls,#search{position:fixed;bottom:14px;background:#1a0000;border:1px solid #500;padding:7px 14px;font-size:.72em;color:#c00;border-radius:6px;cursor:pointer;z-index:99;font-family:inherit;transition:.15s}
+#cls{left:14px}
+#cls:hover{background:#2a0000;border-color:#700}
+#search{left:140px;border:1px solid #400;color:#a00;width:160px;outline:none;cursor:text}
+#search::placeholder{color:#500}
+#search:focus{border-color:#700}
 </style>
 </head>
 <body>
 <div id="hd">
-  <h1>&#9760; CERBERUS GRAPH &nbsp;<small style="color:#400">""" + (filter_target or "ALL TARGETS") + """</small></h1>
+  <h1>&#9760; CERBERUS GRAPH &nbsp;<small>""" + (filter_target or "ALL TARGETS") + """</small></h1>
   <p>""" + str(len(nodes)) + """ nodes &nbsp;|&nbsp; """ + str(len(edges)) + """ edges &nbsp;|&nbsp; """ + timestamp + """</p>
 </div>
 <div id="legend">""" + legend_html + """</div>
 <div id="mynetwork"></div>
 <div id="info"></div>
 <button id="cls" onclick="network.fit()">&#8635; Reset View</button>
+<input id="search" type="text" placeholder="search node...">
 <script>
-var nodes = new vis.DataSet(""" + _json.dumps(nodes) + """);
-var edges = new vis.DataSet(""" + _json.dumps(edges) + """);
+var nodesDS = new vis.DataSet(""" + _json.dumps(nodes) + """);
+var edgesDS = new vis.DataSet(""" + _json.dumps(edges) + """);
 var container = document.getElementById("mynetwork");
 var options = {
   nodes:{shape:"dot",size:12,font:{color:"#c00",size:11,face:"monospace"},borderWidth:2},
-  edges:{color:{color:"#300",highlight:"#c00"},font:{color:"#500",size:9,face:"monospace",align:"middle"},smooth:{type:"dynamic"},arrows:{to:{enabled:true,scaleFactor:0.4}}},
+  edges:{color:{color:"#300",highlight:"#f00"},font:{color:"#500",size:9,face:"monospace",align:"middle"},smooth:{type:"dynamic"},arrows:{to:{enabled:true,scaleFactor:0.4}}},
   groups:{
     target:   {color:{background:"#c00",border:"#f00"},shape:"star",size:22},
     social:   {color:{background:"#030",border:"#0c4"}},
@@ -721,15 +714,31 @@ var options = {
   physics:{stabilization:{iterations:300},forceAtlas2Based:{gravitationalConstant:-80,centralGravity:0.02,springLength:90,springConstant:0.08,damping:0.4},solver:"forceAtlas2Based"},
   interaction:{hover:true,tooltipDelay:100,zoomView:true,dragView:true}
 };
-var network = new vis.Network(container,{nodes,edges},options);
-network.on("click",function(p){
+var network = new vis.Network(container, {nodes: nodesDS, edges: edgesDS}, options);
+network.on("click", function(p){
+  var el = document.getElementById("info");
   if(p.nodes.length){
-    var n=nodes.get(p.nodes[0]);
-    var el=document.getElementById("info");
-    el.style.display="block";
-    el.innerHTML="<b>"+n.group.toUpperCase()+"</b><br>"+n.label+(n.title?"<br><small>"+n.title+"</small>":"");
+    var n = nodesDS.get(p.nodes[0]);
+    el.style.display = "block";
+    el.innerHTML = "<b>" + n.group.toUpperCase() + "</b><br>" + n.label + (n.title ? "<br><small>" + n.title + "</small>" : "");
   } else {
-    document.getElementById("info").style.display="none";
+    el.style.display = "none";
+  }
+});
+document.getElementById("search").addEventListener("keydown", function(e){
+  if(e.key !== "Enter") return;
+  var q = e.target.value.trim().toLowerCase();
+  if(!q) return;
+  var match = nodesDS.get().find(n => (n.label||"").toLowerCase().includes(q));
+  if(match){
+    network.focus(match.id, {scale:1.4, animation:{duration:500, easingFunction:"easeInOutQuad"}});
+    network.selectNodes([match.id]);
+    var el = document.getElementById("info");
+    el.style.display = "block";
+    el.innerHTML = "<b>" + match.group.toUpperCase() + "</b><br>" + match.label + (match.title ? "<br><small>" + match.title + "</small>" : "");
+  } else {
+    e.target.style.borderColor = "#a00";
+    setTimeout(()=> e.target.style.borderColor = "#400", 400);
   }
 });
 </script>
@@ -743,18 +752,34 @@ network.on("click",function(p){
     print(D + "  Serve: cd ~/cerberus/reports && python -m http.server 8080" + X + "\n")
 
 
-# ─────────────────────────────────────────────────────────
-# CORRELATE
-# ─────────────────────────────────────────────────────────
+# VISUALIZE MENU
 
+def visualize_menu(target):
+    from modules.visualize import analyze, tree_view, timeline
+    print("\n" + R + "  === VISUALIZE ===" + X + "\n")
+    print(R + "  [1] ANALYZE       -> intelligence report" + X)
+    print(R + "  [2] TREE          -> discovery tree" + X)
+    print(R + "  [3] TIMELINE      -> exposure timeline" + X)
+    print(R + "  [4] INTEL GRAPH   -> visual HTML graph" + X)
+    print(R + "  [9] Back" + X + "\n")
+    sub = get_input("  Choose: ")
+    if sub == "1":
+        analyze(target)
+    elif sub == "2":
+        tree_view(target)
+    elif sub == "3":
+        timeline(target)
+    elif sub == "4":
+        export_graph()
+    elif sub == "9":
+        return
+    
+# CORRELATE
 def correlate_run(username, target):
     correlate(username, target)
 
 
-# ─────────────────────────────────────────────────────────
 # MAIN
-# ─────────────────────────────────────────────────────────
-
 def main():
     show_banner()
     target = None
@@ -788,12 +813,8 @@ def main():
         elif choice == "3":
             hellscan(target)
         elif choice == "4":
-            chain_ritual(target)
-        elif choice == "5":
-            grimoire_listar()
-        elif choice == "6":
             dorks()
-        elif choice == "7":
+        elif choice == "5":
             print("\n" + R + "  [a] Subdomain Finder" + X)
             print(R + "  [b] Email Lookup" + X + "\n")
             sub = get_input("  Choose: ")
@@ -801,70 +822,33 @@ def main():
                 subdomain_finder(target)
             elif sub == "b":
                 email_lookup()
-        elif choice == "8":
-            configure()
-        elif choice == "9":
-            vulnscan(target)
-        elif choice == "10":
-            phone_osint()
-        elif choice == "11":
-            shodan_search(target)
-        elif choice == "12":
+        elif choice == "6":
             ssl_checker(target)
-        elif choice == "13":
+        elif choice == "7":
             tech_fingerprint(target)
-        elif choice == "14":
+        elif choice == "8":
+            vulnscan(target)
+        elif choice == "9":
             cve_lookup()
-        elif choice == "15":
+        elif choice == "10":
             paste_monitor(target)
-        elif choice == "16":
-            export_html()
-        elif choice == "17":
-            from modules.analyze import analyze
-            analyze(target)
-        elif choice == "18":
-            from modules.tree import tree_view
-            tree_view(target)
-        elif choice == "19":
-            from modules.timeline import timeline
-            timeline(target)
-        elif choice == "20":
-            user = input(R + "  Username for graph: " + X).strip()
-            if user:
-                from social_graph import social_graph
-                social_graph(
-                    username=user,
-                    log_dir=LOG_DIR,
-                    headers=get_headers(),
-                    R=R, D=D, G=G, Y=Y, C=C, X=X,
-                    grimoire_salvar_fn=grimoire_salvar,
-                    progress_fn=progress,
-                    cerberus_say_fn=cerberus_say,
-                )
-        elif choice == "21":
-            from cerberus_watch import cerberus_watch
-            cerberus_watch(
-                target=target,
-                log_dir=LOG_DIR,
-                headers_http=get_headers(),
-                R=R, D=D, G=G, Y=Y, C=C, X=X,
-            )
-        elif choice == "22":
-            export_graph()
-        elif choice == "23":
-            limpar_logs()
-        elif choice == "24":
-            export_markdown(target)
-        elif choice == "25":
-            user = input(R + "  Username: " + X).strip()
-            if user:
-                correlate_run(user, target)
-        elif choice == "26":
-            dashboard()
-        elif choice == "27":
-            tor_control()
-        elif choice == "28":
+        elif choice == "11":
             cloud_scan(target)
+        elif choice == "12":
+            chain_ritual(target)
+        elif choice == "13":
+            grimoire_listar()
+        elif choice == "14":
+            visualize_menu(target)
+        elif choice == "15":
+            dashboard()
+        elif choice == "c":
+            configure()
+        elif choice == "x":
+            tor_control()
+        elif choice == "l":
+            limpar_logs()
+
         else:
             print(R + "\n  Invalid option." + X + "\n")
 

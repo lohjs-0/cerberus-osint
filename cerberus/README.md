@@ -56,7 +56,7 @@ HEAD II  -> RECON      ports, SSL/TLS, tech stack, fingerprinting
 HEAD III -> SECURITY   vulnerabilities, CVEs, injection vectors, exposed paths
 ```
 
-When you run **CHAIN RITUAL (4)**, all three heads analyze the target in sequence and produce a scored judgment:
+When you run **CHAIN RITUAL (12)**, all three heads analyze the target in sequence and produce a scored judgment:
 
 ```
 ======================================
@@ -85,72 +85,170 @@ Verdicts scale with risk: `SOUL IS CLEAN` → `MINOR SINS` → `WATCH CLOSELY` �
 
 ---
 
-## Install & Run
+## Install
 
 ```bash
-git clone https://github.com/lohjs-0/cerberus
-cd cerberus
-pip install requests python-whois
-python3 cerberus.py
+curl -fsSL https://raw.githubusercontent.com/lohjs-0/cerberus/main/install.sh | bash
+```
+
+## Run
+
+```bash
+cerberus
+```
+
+> **Note:** The installer places Cerberus in `~/.cerberus/` and creates the `cerberus` command in `~/.local/bin/`. If the command is not found after install, run it directly:
+> ```bash
+> cd ~/.cerberus && python3 cerberus.py
+> ```
+
+---
+
+## Troubleshooting
+
+### `pip3: command not found`
+
+The installer requires `pip3` to install Python dependencies. If it's missing:
+
+```bash
+sudo apt update && sudo apt install -y python3-pip
+bash install.sh
+```
+
+### `cerberus: command not found`
+
+`~/.local/bin` may not be in your `PATH`. Either run directly:
+
+```bash
+cd ~/.cerberus && python3 cerberus.py
+```
+
+Or add it to your PATH permanently:
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+```
+
+### `can't open file '/path/to/cerberus.py'`
+
+You're running `python3 cerberus.py` from the wrong directory. The installer puts the files in `~/.cerberus/`, not the folder you cloned manually. Navigate there first:
+
+```bash
+cd ~/.cerberus && python3 cerberus.py
+```
+
+### WSL / Windows users
+
+If you're running Cerberus under WSL, make sure you're working inside the Linux filesystem (`~`) and not a Windows path (`/mnt/c/...`). Running from `/mnt/c/` can cause permission and path resolution issues.
+
+```bash
+# Recommended: copy to Linux home first
+cp -r /mnt/c/Users/<you>/cerberus ~/.cerberus
+cd ~/.cerberus && python3 cerberus.py
+```
+
+---
+
+## Menu
+
+```
+  ┌─ COLLECTION / RECON ───────────────────────────────────┐
+  │  (1) SOUL SEARCH    -> username / socials              │
+  │  (2) DOMAIN CURSE   -> domain / IP / DNS               │
+  │  (3) HELLSCAN       -> ports / services                │
+  │  (4) DORKS          -> google dorks                    │
+  │  (5) UNDERWORLD     -> subdomains / email              │
+  │  (6) SSL CHECK      -> certificate / TLS               │
+  │  (7) TECH SCAN      -> stack / frameworks / CMS        │
+  ├─ ANALYSIS / SECURITY ──────────────────────────────────┤
+  │  (8)  VULNSCAN      -> web vulnerabilities             │
+  │  (9)  CVE LOOKUP    -> search NVD by product           │
+  │  (10) PASTE MONITOR -> leaks / public pastes           │
+  │  (11) CLOUD SCAN    -> S3 / Firebase / GCP / Azure     │
+  ├─ AUTOMATION ───────────────────────────────────────────┤
+  │  (12) CHAIN RITUAL  -> full pipeline                   │
+  ├─ REPORTS / VISUALIZATION ──────────────────────────────┤
+  │  (13) GRIMOIRE      -> reports / list / export         │
+  │  (14) VISUALIZE     -> analyze / graph / tree /timeline│
+  │  (15) DASHBOARD     -> terminal intelligence summary   │
+  ├─ SYSTEM ───────────────────────────────────────────────┤
+  │  (C)  CONFIGURE     -> APIs / settings                 │
+  │  (X)  TOR           -> anonymous mode / proxy          │
+  │  (L)  CLEAR LOGS    -> delete target logs              │
+  └────────────────────────────────────────────────────────┘
+
+  (T) SET TARGET   -> change target
+  (0) DESCEND      -> exit
 ```
 
 ---
 
 ## Modules
 
-### Core (1–9)
+### Collection / Recon (1–7)
 
 | # | Module | Description |
 |---|---|---|
 | 1 | SOUL SEARCH | Username lookup across social platforms |
-| 2 | DOMAIN CURSE | WHOIS, DNS records, HTTP headers |
+| 2 | DOMAIN CURSE | `[a]` WHOIS, DNS records, HTTP headers — `[b]` IP geolocation |
 | 3 | HELLSCAN | Port scanner — 15 common ports |
-| 4 | CHAIN RITUAL | Full pipeline across all three heads + Judgment |
-| 5 | GRIMOIRE | Report manager — list and browse saved scans |
-| 6 | DORKS | 9 preset Google dorks + custom input |
-| 7 | UNDERWORLD | Subdomain finder + email OSINT |
-| 8 | CONFIGURE | API keys and settings |
-| 9 | VULNSCAN | Headers, SQLi, XSS, LFI, redirects, admin paths |
+| 4 | DORKS | 9 preset Google dorks + custom input |
+| 5 | UNDERWORLD | `[a]` Subdomain finder (enriched: IP, status, HTTPS, title, tech, ASN) — `[b]` Email OSINT |
+| 6 | SSL CHECK | Certificate validity, TLS version audit, HSTS |
+| 7 | TECH SCAN | Stack fingerprinting — CMS, frameworks, CDN, analytics |
 
-### Extended (10–16)
+### Analysis / Security (8–11)
 
 | # | Module | Description |
 |---|---|---|
-| 10 | PHONE OSINT | Phone number analysis — country, region, carrier |
-| 11 | SHODAN | Device/service data via Shodan API |
-| 12 | SSL CHECK | Certificate validity, TLS version audit, HSTS |
-| 13 | TECH SCAN | Stack fingerprinting — CMS, frameworks, CDN, analytics |
-| 14 | CVE LOOKUP | Real-time NVD query by product or CVE ID |
-| 15 | PASTE MONITOR | Public paste and breach search |
-| 16 | EXPORT HTML | Visual HTML report from all saved scans |
+| 8 | VULNSCAN | Headers, SQLi, XSS, LFI, redirects, admin paths |
+| 9 | CVE LOOKUP | Real-time NVD query by product or CVE ID |
+| 10 | PASTE MONITOR | Public paste and breach search |
+| 11 | CLOUD SCAN | Exposed bucket/resource check — S3, Firebase, GCP, Azure |
 
-### Intelligence (17–22)
+### Automation (12)
 
 | # | Module | Description |
 |---|---|---|
-| 17 | ANALYZE | Reads saved reports and generates interpreted intelligence |
-| 18 | TREE | Visual discovery tree — subdomains, ports, paths, stack |
-| 19 | TIMELINE | Exposure timeline built from all scans on the target |
-| 20 | SOCIAL GRAPH | Username connection mapping |
-| 21 | CERBERUS WATCH | Monitoring daemon — continuous target surveillance |
-| 22 | GRAPH | Interactive HTML graph (vis-network) of all findings |
+| 12 | CHAIN RITUAL | Full pipeline across all three heads + Judgment |
 
-### Utility (23–28)
+### Reports / Visualization (13–15)
 
 | # | Module | Description |
 |---|---|---|
-| 23 | CLEAR LOGS | Delete all saved logs for a target |
-| 24 | EXPORT MD | Markdown report — compatible with Obsidian |
-| 25 | CORRELATE | Auto-correlation — username → domain pivot |
-| 26 | DASHBOARD | Terminal intelligence summary across all targets |
-| 27 | TOR | Anonymous mode — toggle Tor proxy, check IP |
-| 28 | CLOUD SCAN | Exposed bucket/resource check — S3, Firebase, GCP, Azure |
+| 13 | GRIMOIRE | Report manager — list and browse saved scans |
+| 14 | VISUALIZE | Unified intelligence view — analyze, tree, timeline, HTML graph |
+| 15 | DASHBOARD | Terminal intelligence summary across all targets |
+
+### System (C / X / L)
+
+| Key | Module | Description |
+|---|---|---|
+| C | CONFIGURE | API keys and settings |
+| X | TOR | Anonymous mode — toggle Tor proxy, check IP |
+| L | CLEAR LOGS | Delete all saved logs for a target |
+
+---
+
+## VISUALIZE — Submenu (14)
+
+All intelligence and visualization features are unified under a single menu:
+
+```
+=== VISUALIZE ===
+
+[1] ANALYZE       -> intelligence report
+[2] TREE          -> discovery tree
+[3] TIMELINE      -> exposure timeline
+[4] INTEL GRAPH   -> visual HTML graph
+[9] Back
+```
 
 ---
 
 ## Intelligence Layer
 
-Instead of listing raw findings, **ANALYZE (17)** interprets them:
+Instead of listing raw findings, **VISUALIZE → ANALYZE** interprets them:
 
 ```
 [HIGH] EXPOSED ADMIN SURFACE
@@ -172,9 +270,35 @@ Instead of listing raw findings, **ANALYZE (17)** interprets them:
 
 ---
 
+## Subdomain Finder — Enriched Output
+
+Each discovered subdomain is enriched with live data:
+
+```
+[FOUND] api.github.com
+├─ IP     : 20.201.28.148
+├─ Status : 200
+├─ HTTPS  : Sim
+├─ Título : github · build and ship software on a single, c
+├─ Tech   : github.com
+└─ ASN    : 8075 / Microsoft Corporation
+
+[FOUND] ssh.github.com
+├─ IP     : 20.201.28.152
+├─ Status : 200
+├─ HTTPS  : Não
+├─ Título : github - change is constant. github keep
+├─ Tech   : github.com
+└─ ASN    : 8075 / Microsoft Corporation
+```
+
+Runs in parallel (10 threads) across DNS resolution, HTTP probing, and ASN lookup via ipwho.is.
+
+---
+
 ## Discovery Tree
 
-**TREE (18)** maps everything found into a structured view:
+**VISUALIZE → TREE** maps everything found into a structured view:
 
 ```
 example.com
@@ -197,7 +321,7 @@ example.com
 
 ## Exposure Timeline
 
-**TIMELINE (19)** builds a chronological history of everything found:
+**VISUALIZE → TIMELINE** builds a chronological history of everything found:
 
 ```
 -- 2007 ------------------------------------
@@ -217,7 +341,7 @@ example.com
 
 ## Dashboard
 
-**DASHBOARD (26)** gives a terminal-based intelligence summary across all scanned targets:
+**DASHBOARD (15)** gives a terminal-based intelligence summary across all scanned targets:
 
 ```
   ┌─────────────────────────────────────┐
@@ -236,7 +360,7 @@ example.com
 
 ## Graph Export
 
-**GRAPH (22)** generates an interactive HTML visualization (vis-network) linking targets to their subdomains, open ports, vulnerabilities, technologies, ISP, and SSL CA in a navigable node graph.
+**VISUALIZE → INTEL GRAPH** generates an interactive HTML visualization (vis-network) linking targets to their subdomains, open ports, vulnerabilities, technologies, ISP, and SSL CA in a navigable node graph.
 
 Serve locally:
 ```bash
@@ -289,7 +413,7 @@ cd ~/cerberus/reports && python -m http.server 8080
 
 ## Tor / Anonymous Mode
 
-**TOR (27)** toggles routing through Tor (`socks5h://127.0.0.1:9050`) and verifies the exit IP via `check.torproject.org`. When active, `[TOR ON]` appears next to the target in the menu.
+**TOR (X)** toggles routing through Tor (`socks5h://127.0.0.1:9150`) and verifies the exit IP via `check.torproject.org`. When active, `[TOR ON]` appears next to the target in the menu.
 
 ```
 [1] Enable Tor
@@ -304,18 +428,20 @@ cd ~/cerberus/reports && python -m http.server 8080
 
 | API | Used in | Free tier | Link |
 |---|---|---|---|
-| Shodan | Module 11 | Yes (limited) | account.shodan.io |
-| NumVerify | Module 10 | 100 req/month | numverify.com |
+| Shodan | CHAIN RITUAL / internals | Yes (limited) | account.shodan.io |
+| NumVerify | CHAIN RITUAL / internals | 100 req/month | numverify.com |
 
-Configure via `(8) CONFIGURE`.
+Configure via **(C) CONFIGURE**.
 
 ---
 
 ## Requirements
 
 ```bash
-pip install requests python-whois
+pip install requests[socks] python-whois
 ```
+
+`requests[socks]` is required for Tor support.
 
 ---
 
@@ -334,9 +460,7 @@ cerberus/
 |   |-- head2_recon.py     # Domain, IP, hellscan, SSL, tech, subdomains
 |   `-- head3_security.py  # Vulnscan, CVE, paste monitor, Shodan, cloud, phone
 |-- modules/
-|   |-- analyze.py         # Intelligence report
-|   |-- tree.py            # Discovery tree
-|   `-- timeline.py        # Exposure timeline
+|   `-- visualize.py       # Analyze, tree, timeline (unified intelligence module)
 |-- logs/                  # Auto-created — scan reports (.txt)
 |-- reports/               # Auto-created — HTML/MD exports
 `-- config/
