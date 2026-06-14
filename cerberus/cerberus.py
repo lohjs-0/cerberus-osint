@@ -781,6 +781,11 @@ def correlate_run(username, target):
 
 # MAIN
 def main():
+    def show_intro():
+        intro = os.path.join(os.path.dirname(__file__), "intro.sh")
+        if os.path.exists(intro):
+            subprocess.run(["bash", intro])
+    show_intro()
     show_banner()
     target = None
 
@@ -848,10 +853,8 @@ def main():
             tor_control()
         elif choice == "l":
             limpar_logs()
-
         else:
             print(R + "\n  Invalid option." + X + "\n")
-
 
 if __name__ == "__main__":
     main()
