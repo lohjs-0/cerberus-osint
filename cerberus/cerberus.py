@@ -13,6 +13,11 @@ import datetime
 import subprocess
 import requests
 
+try:
+    import pyfiglet
+except ImportError:
+    pyfiglet = None
+
 from core.utils import R, D, G, Y, C, X, get_headers, get_proxies, set_tor, is_tor, get_input, progress, head_wake, head_done, cerberus_say, QUOTES
 from core.config import config_load, config_save, configure
 from core.grimoire import grimoire_salvar, grimoire_listar, limpar_logs, export_html, export_markdown
@@ -21,6 +26,22 @@ from heads.head2_recon import domain_curse, ip_recon, hellscan, ssl_checker, tec
 from heads.head3_security import vulnscan, cve_lookup, paste_monitor, shodan_search, cloud_scan, phone_osint
 
 LOG_DIR = os.path.expanduser("~/cerberus/logs")
+
+
+# DARK HACKER FX
+
+def hacker_print(text, delay=0.01):
+    """Imprime texto com efeito de 'digitação', estilo terminal hacker."""
+    for char in text:
+        sys.stdout.write(char)
+        sys.stdout.flush()
+        time.sleep(delay)
+    print()
+
+
+def blink(text):
+    """Aplica o código ANSI de blink (\\033[5m) a um trecho de texto."""
+    return "\033[5m" + text + "\033[0m"
 
 ART = r"""                                                       
                     .-@W=                                             
@@ -57,6 +78,16 @@ TITLE = r"""    ___          _
 \____/\___|_|  |_.__/ \___|_|   \__,_|___/
                                           """
 
+
+def get_title():
+    """Gera o título ASCII via pyfiglet (fonte agressiva). Cai no TITLE fixo se indisponível."""
+    if pyfiglet is None:
+        return TITLE
+    try:
+        return pyfiglet.figlet_format("CERBERUS", font="slant")
+    except Exception:
+        return TITLE
+
 INFO_BOX = r"""+-------------------------------------------+
 | [!] CERBERUS: OSINT & SECURITY ANALYSIS  |
 +-------------------------------------------+
@@ -79,7 +110,7 @@ INFO_BOX = r"""+-------------------------------------------+
 def show_banner():
     os.system("cls" if os.name == "nt" else "clear")
 
-    title_lines = TITLE.split("\n")
+    title_lines = get_title().split("\n")
     if title_lines and title_lines[0].strip() == "":
         title_lines = title_lines[1:]
 
@@ -175,21 +206,25 @@ def calcular_score(portas, high_vulns, medium_vulns, subdomains, ssl_dias, perfi
 def judgment(osint_score, recon_score, sec_score, findings):
     overall = int((osint_score + recon_score + sec_score) / 3)
     if overall >= 75:
-        verdict     = "CONDEMNED"
+        verdict     = "[CRITICAL] TARGET COMPROMISED. FULL BREACH."
         verdict_msg = "This soul is heavily exposed. Immediate action required."
         cor         = R
+        piscar      = True
     elif overall >= 50:
-        verdict     = "WATCH CLOSELY"
+        verdict     = "[WARNING] SIGNIFICANT EXPOSURE. SHIELDS COMPROMISED."
         verdict_msg = "Significant vulnerabilities detected. Monitor and act."
-        cor         = Y
+        cor         = R
+        piscar      = False
     elif overall >= 25:
-        verdict     = "MINOR SINS"
+        verdict     = "[!] MINOR ANOMALIES. MONITORING ADVISED."
         verdict_msg = "Some weaknesses found. Low but not negligible risk."
         cor         = Y
+        piscar      = False
     else:
-        verdict     = "SOUL IS CLEAN"
+        verdict     = "[+] SYSTEM SECURE. NO BREACH DETECTED."
         verdict_msg = "No significant threats detected."
         cor         = G
+        piscar      = False
 
     def bar(score):
         filled = int(score / 5)
@@ -212,7 +247,10 @@ def judgment(osint_score, recon_score, sec_score, findings):
         for f in findings:
             print(D + "  -> " + f + X)
     print()
-    print(cor + "  VERDICT : " + verdict + X)
+    if piscar:
+        print(blink(cor + "  VERDICT : " + verdict + X))
+    else:
+        print(cor + "  VERDICT : " + verdict + X)
     print(D + "  " + verdict_msg + X)
     print()
     print(R + "  ======================================" + X)
@@ -233,7 +271,7 @@ def chain_ritual(target):
 
     print()
     print(R + "  ======================================" + X)
-    cerberus_say(R + "  [CERBERUS] The gates open for: " + target + X)
+    hacker_print(R + "  [CERBERUS] The gates open for: " + target + X, delay=0.015)
     print(R + "  ======================================" + X)
     print()
     time.sleep(0.5)
@@ -653,9 +691,9 @@ def export_graph():
     legend_html = ""
     for grp, cor, nome_l in legend:
         legend_html += f'<div class="li"><span style="background:{cor}"></span>{nome_l}</div>'
-
+      
     html = """<!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -663,82 +701,220 @@ def export_graph():
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#080808;font-family:'Share Tech Mono',monospace;color:#c00;overflow:hidden}
-#hd{padding:10px 16px;border-bottom:1px solid #300;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;background:linear-gradient(90deg,#100000,#0a0000)}
-#hd h1{font-size:.9em;letter-spacing:3px;color:#f00;text-shadow:0 0 6px rgba(255,0,0,.3)}
-#hd h1 small{color:#600;font-weight:normal;letter-spacing:1px}
-#hd p{font-size:.7em;color:#500;letter-spacing:1px}
-#legend{display:flex;gap:14px;flex-wrap:wrap;padding:8px 16px;border-bottom:1px solid #200;background:#0a0000}
-.li{display:flex;align-items:center;gap:6px;font-size:.7em;color:#900;letter-spacing:1px}
-.li span{width:10px;height:10px;border-radius:50%;display:inline-block;box-shadow:0 0 4px currentColor}
-#mynetwork{width:100vw;height:calc(100vh - 76px);background:radial-gradient(circle at center,#0c0000 0%,#060606 80%)}
-#info{position:fixed;bottom:14px;right:14px;background:#0d0000;border:1px solid #400;padding:10px 14px;font-size:.72em;color:#d33;border-radius:6px;display:none;max-width:240px;word-break:break-all;z-index:99;box-shadow:0 0 12px rgba(255,0,0,.15);line-height:1.5}
-#info b{color:#f55;letter-spacing:1px}
-#info small{color:#700}
-#cls,#search{position:fixed;bottom:14px;background:#1a0000;border:1px solid #500;padding:7px 14px;font-size:.72em;color:#c00;border-radius:6px;cursor:pointer;z-index:99;font-family:inherit;transition:.15s}
-#cls{left:14px}
-#cls:hover{background:#2a0000;border-color:#700}
-#search{left:140px;border:1px solid #400;color:#a00;width:160px;outline:none;cursor:text}
-#search::placeholder{color:#500}
-#search:focus{border-color:#700}
+
+:root {
+  --red:    #c00;
+  --red-hi: #f00;
+  --bg:     #080808;
+  --bg-hd:  #0a0000;
+  --border: #300;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  font-family: 'Share Tech Mono', monospace;
+  color: var(--red);
+  overflow: hidden;
+}
+
+#hd {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: linear-gradient(90deg, #100000, var(--bg-hd));
+}
+
+#hd h1 {
+  font-size: .9em;
+  letter-spacing: 3px;
+  color: var(--red-hi);
+  text-shadow: 0 0 8px rgba(255,0,0,.3);
+}
+
+#hd h1 small {
+  color: #600;
+  font-weight: normal;
+  letter-spacing: 1px;
+}
+
+#hd p { font-size: .7em; color: #500; letter-spacing: 1px; }
+
+#legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 7px 16px;
+  border-bottom: 1px solid #200;
+  background: var(--bg-hd);
+}
+
+.li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .68em;
+  color: #900;
+  letter-spacing: 1px;
+}
+
+.li span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 4px currentColor;
+}
+
+#mynetwork {
+  width: 100vw;
+  height: calc(100vh - 72px);
+  background: radial-gradient(circle at center, #0c0000 0%, #060606 80%);
+}
+
+#info {
+  position: fixed;
+  bottom: 14px;
+  right: 14px;
+  background: #0d0000;
+  border: 1px solid #400;
+  padding: 10px 14px;
+  font-size: .72em;
+  color: #d33;
+  border-radius: 4px;
+  display: none;
+  max-width: 240px;
+  word-break: break-all;
+  z-index: 99;
+  box-shadow: 0 0 14px rgba(255,0,0,.12);
+  line-height: 1.6;
+}
+
+#info b   { color: #f55; letter-spacing: 1px; }
+#info small { color: #700; }
+
+#cls, #search {
+  position: fixed;
+  bottom: 14px;
+  background: #1a0000;
+  border: 1px solid #500;
+  padding: 7px 14px;
+  font-size: .72em;
+  color: var(--red);
+  border-radius: 4px;
+  z-index: 99;
+  font-family: inherit;
+  transition: background .12s, border-color .12s;
+}
+
+#cls { left: 14px; cursor: pointer; }
+#cls:hover { background: #2a0000; border-color: #700; }
+
+#search {
+  left: 130px;
+  width: 165px;
+  border-color: #400;
+  color: #a00;
+  outline: none;
+  cursor: text;
+}
+
+#search::placeholder { color: #500; }
+#search:focus { border-color: #700; }
 </style>
 </head>
 <body>
+
 <div id="hd">
   <h1>&#9760; CERBERUS GRAPH &nbsp;<small>""" + (filter_target or "ALL TARGETS") + """</small></h1>
-  <p>""" + str(len(nodes)) + """ nodes &nbsp;|&nbsp; """ + str(len(edges)) + """ edges &nbsp;|&nbsp; """ + timestamp + """</p>
+  <p>""" + str(len(nodes)) + """ nodes &nbsp;·&nbsp; """ + str(len(edges)) + """ edges &nbsp;·&nbsp; """ + timestamp + """</p>
 </div>
+
 <div id="legend">""" + legend_html + """</div>
 <div id="mynetwork"></div>
 <div id="info"></div>
-<button id="cls" onclick="network.fit()">&#8635; Reset View</button>
+
+<button id="cls" onclick="network.fit()">&#8635; reset view</button>
 <input id="search" type="text" placeholder="search node...">
+
 <script>
 var nodesDS = new vis.DataSet(""" + _json.dumps(nodes) + """);
 var edgesDS = new vis.DataSet(""" + _json.dumps(edges) + """);
-var container = document.getElementById("mynetwork");
+
 var options = {
-  nodes:{shape:"dot",size:12,font:{color:"#c00",size:11,face:"monospace"},borderWidth:2},
-  edges:{color:{color:"#300",highlight:"#f00"},font:{color:"#500",size:9,face:"monospace",align:"middle"},smooth:{type:"dynamic"},arrows:{to:{enabled:true,scaleFactor:0.4}}},
-  groups:{
-    target:   {color:{background:"#c00",border:"#f00"},shape:"star",size:22},
-    social:   {color:{background:"#030",border:"#0c4"}},
-    subdomain:{color:{background:"#001a66",border:"#44f"}},
-    port:     {color:{background:"#4d0000",border:"#f44"}},
-    vuln:     {color:{background:"#333300",border:"#ff0"}},
-    tech:     {color:{background:"#330033",border:"#f0f"}},
-    isp:      {color:{background:"#003333",border:"#0ff"}},
-    ssl:      {color:{background:"#332200",border:"#fa0"}},
+  nodes: {
+    shape: "dot", size: 12,
+    font: { color: "#c00", size: 11, face: "monospace" },
+    borderWidth: 2
   },
-  physics:{stabilization:{iterations:300},forceAtlas2Based:{gravitationalConstant:-80,centralGravity:0.02,springLength:90,springConstant:0.08,damping:0.4},solver:"forceAtlas2Based"},
-  interaction:{hover:true,tooltipDelay:100,zoomView:true,dragView:true}
+  edges: {
+    color: { color: "#300", highlight: "#f00" },
+    font: { color: "#500", size: 9, face: "monospace", align: "middle" },
+    smooth: { type: "dynamic" },
+    arrows: { to: { enabled: true, scaleFactor: 0.4 } }
+  },
+  groups: {
+    target:    { color: { background: "#c00", border: "#f00" }, shape: "star", size: 22 },
+    social:    { color: { background: "#030", border: "#0c4" } },
+    subdomain: { color: { background: "#001a66", border: "#44f" } },
+    port:      { color: { background: "#4d0000", border: "#f44" } },
+    vuln:      { color: { background: "#333300", border: "#ff0" } },
+    tech:      { color: { background: "#330033", border: "#f0f" } },
+    isp:       { color: { background: "#003333", border: "#0ff" } },
+    ssl:       { color: { background: "#332200", border: "#fa0" } }
+  },
+  physics: {
+    stabilization: { iterations: 300 },
+    forceAtlas2Based: {
+      gravitationalConstant: -80,
+      centralGravity: 0.02,
+      springLength: 90,
+      springConstant: 0.08,
+      damping: 0.4
+    },
+    solver: "forceAtlas2Based"
+  },
+  interaction: { hover: true, tooltipDelay: 100, zoomView: true, dragView: true }
 };
-var network = new vis.Network(container, {nodes: nodesDS, edges: edgesDS}, options);
-network.on("click", function(p){
+
+var network = new vis.Network(
+  document.getElementById("mynetwork"),
+  { nodes: nodesDS, edges: edgesDS },
+  options
+);
+
+network.on("click", function(p) {
   var el = document.getElementById("info");
-  if(p.nodes.length){
+  if (p.nodes.length) {
     var n = nodesDS.get(p.nodes[0]);
     el.style.display = "block";
-    el.innerHTML = "<b>" + n.group.toUpperCase() + "</b><br>" + n.label + (n.title ? "<br><small>" + n.title + "</small>" : "");
+    el.innerHTML = "<b>" + n.group.toUpperCase() + "</b><br>" + n.label +
+      (n.title ? "<br><small>" + n.title + "</small>" : "");
   } else {
     el.style.display = "none";
   }
 });
-document.getElementById("search").addEventListener("keydown", function(e){
-  if(e.key !== "Enter") return;
+
+document.getElementById("search").addEventListener("keydown", function(e) {
+  if (e.key !== "Enter") return;
   var q = e.target.value.trim().toLowerCase();
-  if(!q) return;
-  var match = nodesDS.get().find(n => (n.label||"").toLowerCase().includes(q));
-  if(match){
-    network.focus(match.id, {scale:1.4, animation:{duration:500, easingFunction:"easeInOutQuad"}});
+  if (!q) return;
+  var match = nodesDS.get().find(n => (n.label || "").toLowerCase().includes(q));
+  if (match) {
+    network.focus(match.id, { scale: 1.4, animation: { duration: 500, easingFunction: "easeInOutQuad" } });
     network.selectNodes([match.id]);
     var el = document.getElementById("info");
     el.style.display = "block";
-    el.innerHTML = "<b>" + match.group.toUpperCase() + "</b><br>" + match.label + (match.title ? "<br><small>" + match.title + "</small>" : "");
+    el.innerHTML = "<b>" + match.group.toUpperCase() + "</b><br>" + match.label +
+      (match.title ? "<br><small>" + match.title + "</small>" : "");
   } else {
     e.target.style.borderColor = "#a00";
-    setTimeout(()=> e.target.style.borderColor = "#400", 400);
+    setTimeout(() => e.target.style.borderColor = "#400", 400);
   }
 });
 </script>

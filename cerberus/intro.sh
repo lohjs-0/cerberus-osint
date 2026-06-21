@@ -13,7 +13,7 @@ glitch_line() {
     local glitch_chars=('█' '▓' '░' '▒' '╬' '╪' '#' '@' '%' '&')
     local len=${#text}
     for pass in 1 2; do
-        echo -ne "\r${DR}"
+        echo -ne "\r\033[K${DR}"
         for ((i=0; i<len; i++)); do
             if (( RANDOM % 4 == 0 )); then
                 echo -ne "${glitch_chars[$((RANDOM % ${#glitch_chars[@]}))]}"
@@ -24,14 +24,14 @@ glitch_line() {
         echo -ne "${X}"
         sleep 0.05
     done
-    echo -e "\r${R}${text}${X}"
+    echo -e "\r\033[K${R}${text}${X}"
 }
 
 flicker() {
     local text="$1"
-    echo -ne "\r${DR}${text}${X}"; sleep 0.06
-    echo -ne "\r${BR}${text}${X}"; sleep 0.06
-    echo -e  "\r${R}${text}${X}"
+    echo -ne "\r\033[K${DR}${text}${X}"; sleep 0.06
+    echo -ne "\r\033[K${BR}${text}${X}"; sleep 0.06
+    echo -e  "\r\033[K${R}${text}${X}"
 }
 
 get_info() {
@@ -99,7 +99,7 @@ echo ""
 glitch_line "    ___          _                         "
 glitch_line "  / __\\___ _ __| |__   ___ _ __ _   _ ___ "
 glitch_line " / /  / _ \\ '__| '_ \\ / _ \\ '__| | | / __|"
-glitch_line "/ /__|  __/ |  | |_) |  __/ |  | |_| \\__ \\"
+glitch_line "/ /__|  __/ |  | |_) |  __/ |  | |_| \\__ \\\\"
 glitch_line "\\____/\\___|_|  |_.__/ \\___|_|   \\__,_|___/ "
 echo ""
 
